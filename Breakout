@@ -1,0 +1,10 @@
+#include<stdio.h>
+#include<IOSTREAM>
+#include<time.h>
+#include<conio.h>
+#include<windows.h>
+
+#define width 40
+#define height 20
+
+using namespace std;

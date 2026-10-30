@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Compilar y Ejecutar Breakout",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "Breakout_0.4.cpp",
+                "-o",
+                "Breakout.exe",
+                "-I.",
+                "-L.",
+                "-lraylib",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm",
+                "-luser32",
+                "-lshell32",
+                "-mwindows"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}
