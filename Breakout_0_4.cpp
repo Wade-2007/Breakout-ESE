@@ -2,37 +2,6 @@
 #include <vector>
 #include <cmath>
 #include <cstdlib>
-#include <cstdio>
-#include <sys/stat.h>
-#include <cstdarg>
-
-// Shims de compatibilidad definitivos para libraylib.a
-extern "C" {
-    void sincosf(float x, float* psin, float* pcos) {
-        *psin = sinf(x);
-        *pcos = cosf(x);
-    }
-
-    FILE* __cdecl __acrt_iob_func(unsigned index) {
-        return (index == 0) ? stdin : (index == 1) ? stdout : stderr;
-    }
-
-    int __cdecl __mingw_sscanf(const char* _Stream, const char* _Format, ...) {
-        va_list _ArgList;
-        va_start(_ArgList, _Format);
-        int _Result = vsscanf(_Stream, _Format, _ArgList);
-        va_end(_ArgList);
-        return _Result;
-    }
-
-    int __cdecl stat64i32(const char* path, struct stat* buffer) {
-        return stat(path, buffer);
-    }
-}
-#include "raylib.h"
-#include <vector>
-#include <cmath>
-#include <cstdlib>
 
 // Dimensiones de la pantalla
 const int SCREEN_WIDTH = 800;
@@ -78,8 +47,8 @@ struct Brick {
 void ResetBall(std::vector<Ball>& balls, const Paddle& paddle) {
     balls.clear();
     Ball newBall;
-    newBall.position = (Vector2){ paddle.rect.x + paddle.rect.width / 2.0f, paddle.rect.y - 12.0f };
-    newBall.speed = (Vector2){ 220.0f, -320.0f };
+    newBall.position = Vector2{ paddle.rect.x + paddle.rect.width / 2.0f, paddle.rect.y - 12.0f };
+    newBall.speed = Vector2{ 220.0f, -320.0f };
     newBall.radius = 8.0f;
     newBall.active = true;
     balls.push_back(newBall);
@@ -227,7 +196,7 @@ int main() {
 
     // Inicializar Paleta
     Paddle paddle;
-    paddle.rect = (Rectangle){ SCREEN_WIDTH / 2.0f - 60.0f, SCREEN_HEIGHT - 40.0f, 120.0f, 15.0f };
+    paddle.rect = Rectangle{ SCREEN_WIDTH / 2.0f - 60.0f, SCREEN_HEIGHT - 40.0f, 120.0f, 15.0f };
     paddle.speed = 500.0f;
 
     // Inicializar Pelotas
@@ -243,7 +212,7 @@ int main() {
     for (int r = 0; r < BRICK_ROWS; ++r) {
         for (int c = 0; c < BRICK_COLS; ++c) {
             Brick brick;
-            brick.rect = (Rectangle){
+            brick.rect = Rectangle{
                 BRICK_OFFSET_LEFT + c * (BRICK_WIDTH + BRICK_PADDING),
                 BRICK_OFFSET_TOP + r * (BRICK_HEIGHT + BRICK_PADDING),
                 BRICK_WIDTH,
@@ -293,9 +262,9 @@ int main() {
             // --- TEMPORIZADOR DE SCREEN SHAKE ---
             if (shakeTimer > 0.0f) {
                 shakeTimer -= deltaTime;
-                camera.offset = (Vector2){ (float)GetRandomValue(-5, 5), (float)GetRandomValue(-5, 5) };
+                camera.offset = Vector2{ (float)GetRandomValue(-5, 5), (float)GetRandomValue(-5, 5) };
             } else {
-                camera.offset = (Vector2){ 0.0f, 0.0f };
+                camera.offset = Vector2{ 0.0f, 0.0f };
             }
 
             // --- CONTROLES DE LA PALETA ---
@@ -397,7 +366,7 @@ int main() {
                         std::vector<bool> wasActive(bricks.size());
                         for (size_t m = 0; m < bricks.size(); ++m) wasActive[m] = bricks[m].active;
 
-                        // Destruir bloque y manejar efectos explosivos (función original intacta)
+                        // Destruir bloque y manejar efectos explosivos
                         DestroyBrick((int)b, bricks, score);
 
                         // Generar partículas y power-ups para todos los bloques recién destruidos
@@ -425,7 +394,7 @@ int main() {
                                 if (balls[k].active) {
                                     Ball duplicatedBall = balls[k];
                                     // Variación de dirección horizontal para separar las pelotas
-                                    duplicatedBall.speed.x = -balls[k].speed.x + GetRandomValue(-80, 80);
+                                    duplicatedBall.speed.x = -balls[k].speed.x + (float)GetRandomValue(-80, 80);
                                     balls.push_back(duplicatedBall);
                                 }
                             }
@@ -470,7 +439,7 @@ int main() {
         // Dibujar Partículas
         for (const auto& p : particles) {
             if (p.active) {
-                DrawRectangleV(p.position, (Vector2){ p.size, p.size }, Fade(p.color, p.alpha));
+                DrawRectangleV(p.position, Vector2{ p.size, p.size }, Fade(p.color, p.alpha));
             }
         }
 
@@ -555,7 +524,7 @@ int main() {
             }
         } else if (gameWon) {
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Fade(BLACK, 0.7f));
-            DrawText("¡VICTORIA!", SCREEN_WIDTH / 2 - 110, SCREEN_HEIGHT / 2 - 20, 40, GREEN);
+            DrawText("VICTORIA!", SCREEN_WIDTH / 2 - 110, SCREEN_HEIGHT / 2 - 20, 40, GREEN);
             DrawText("Presiona R para el siguiente nivel", SCREEN_WIDTH / 2 - 175, SCREEN_HEIGHT / 2 + 30, 20, GRAY);
             if (IsKeyPressed(KEY_R)) {
                 level++;

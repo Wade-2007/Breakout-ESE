@@ -1,0 +1,13 @@
+ejecutar como administrador el MSYS UCRT64
+
+
+cd /C/Users/compu/OneDrive/Desktop/Breakout
+
+
+
+g++ Breakout_0_4.cpp -o Breakout_0_4 -I. -L. -static -lraylib -lopengl32 -lgdi32 -lwinmm -mwindows
+
+
+
+./Breakout_0_4
+
